@@ -13,7 +13,7 @@ LIMITE_UNIDADE = 10
 
 # AUTENTICAÇÃO GOOGLE SHEETS
 
-CAMINHO_CRED = r"C:\Users\allan\OneDrive\Documentos\CredenciaisSeguras\monte-sinai.json"
+CAMINHO_CRED = r"C:\Users\allan\OneDrive\Documentos\CredenciaisSeguras\monte-sinai-estoque-435d287fd76c.json"
 
 scope = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -22,6 +22,7 @@ scope = [
 
 credenciais = ServiceAccountCredentials.from_json_keyfile_name(
     CAMINHO_CRED, scope
+    
 )
 
 cliente = gspread.authorize(credenciais)
