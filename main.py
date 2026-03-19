@@ -7,8 +7,8 @@ from datetime import datetime, timedelta
 # CONFIGURAÇÕES
 
 LINK_PLANILHA = "https://docs.google.com/spreadsheets/d/1Kp0qogeExlL3POt8zb9x2O2yTzRuYlg9hCa8eW_tbMk/edit?hl=pt-br&gid=0#gid=0"
-NUMERO_WPP = "+5591988028298"
-LIMITE_GRAMAS = 2000
+NUMERO_WPP = "+5591992945159"
+LIMITE_GRAMAS = 5000
 LIMITE_UNIDADE = 10
 
 # AUTENTICAÇÃO GOOGLE SHEETS
@@ -41,17 +41,23 @@ alertas = []
 for _, row in df.iterrows():
     produto = row["Produto"]
     codigo = row["Codigo"]
-    estoque = row["Estoque Atual (g)"] if row["Peso Unidade"] == 'g' else row["Estoque Atual (g)"]
-    peso_unid = row["Peso Unidade"]
+    peso_unid = str(row["Peso Unidade"]).strip().lower()
 
-    # ESTOQUE BAIXO
+    try:
+        estoque = float(row["Estoque Atual (g)"])
+    except:
+        estoque = 0
 
     if peso_unid == "g":
         if estoque < LIMITE_GRAMAS:
-            alertas.append(f"{produto} ({codigo}) abaixo de {LIMITE_GRAMAS}g. Atual: {estoque}g.")
-    else:
+            alertas.append(
+                f"{produto} ({codigo}) abaixo de {LIMITE_GRAMAS}g. Atual: {int(estoque)}g."
+            )
+    elif peso_unid == "un":
         if estoque < LIMITE_UNIDADE:
-            alertas.append(f"{produto} ({codigo}) abaixo de {LIMITE_UNIDADE} un. Atual: {estoque} un.")
+            alertas.append(
+                f"{produto} ({codigo}) abaixo de {LIMITE_UNIDADE} un. Atual: {int(estoque)} un."
+            )
 
     # VALIDADE PRÓXIMA
 
