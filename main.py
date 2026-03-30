@@ -12,8 +12,8 @@ from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 # CONFIGURAÇÕES
 # =========================================================
 
-TOKEN_TELEGRAM = "8620256908:AAEhFfUsjQYlLFOziUc6FmwnNxKz8JbR5Uw"
-CHAT_ID_ENVIO_AUTOMATICO = 5073956680  # seu chat_id
+TOKEN_TELEGRAM = "TOKEN_TELEGRAM"
+CHAT_ID_ENVIO_AUTOMATICO = 0000000  # seu chat_id
 
 LINK_PLANILHA = "https://docs.google.com/spreadsheets/d/1Kp0qogeExlL3POt8zb9x2O2yTzRuYlg9hCa8eW_tbMk/edit?hl=pt-br&gid=0#gid=0"
 CAMINHO_CRED = r"C:\Users\allan\OneDrive\Documentos\CredenciaisSeguras\monte-sinai-estoque-435d287fd76c.json"
