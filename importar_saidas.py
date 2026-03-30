@@ -4,74 +4,56 @@ import mysql.connector
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="senha",
+    password="senhafacil",
     database="monte_sinai"
 )
 
 cursor = conn.cursor()
 
-# lê o CSV
-df = pd.read_csv("Saidas.csv", encoding="utf-8")
+df = pd.read_csv("Entradas.csv", encoding="utf-8")
 
 print("Colunas do CSV:", df.columns.tolist())
 
-# tratar data
+# converte data
 df["Data"] = pd.to_datetime(df["Data"], dayfirst=True, errors="coerce")
 df = df.dropna(subset=["Data"])
 df["Data"] = df["Data"].dt.strftime("%Y-%m-%d")
 
-# tratar quantidade
-df["Quantidade"] = pd.to_numeric(df["Quantidade"], errors="coerce")
+# debug
+print("\nValores nulos por coluna:")
+print(df.isna().sum())
 
-# manter só saídas reais
-df = df[df["Quantidade"].notna()]
-df = df[df["Quantidade"] > 0]
-
-# trocar NaN por None
-df = df.where(pd.notna(df), None)
-
-# buscar unidade direto do banco
-cursor.execute("SELECT codigo, unidade_medida FROM produtos")
-unidades = dict(cursor.fetchall())
-
-# limpar tabela antes
-cursor.execute("DELETE FROM saidas")
+cursor.execute("DELETE FROM entradas")
 
 for _, row in df.iterrows():
-    codigo = str(row["Código"]).strip()
-    produto = str(row["Produto"]).strip()
-    funcionario = None if row["Funcionario"] is None else str(row["Funcionario"]).strip()
-
-    unidade = unidades.get(codigo)
-
-    # se o código não existir em produtos, ignora e avisa
-    if unidade is None:
-        print(f"⚠ Código não encontrado em produtos: {codigo} - {produto}")
-        continue
+    data = row["Data"]
+    codigo = None if pd.isna(row["Código do Produto"]) else str(row["Código do Produto"]).strip()
+    produto = None if pd.isna(row["Produto"]) else str(row["Produto"]).strip()
+    unidade = None if pd.isna(row["Unidade"]) else str(row["Unidade"]).strip().lower()
+    quantidade = None if pd.isna(row["Quantidade"]) else float(row["Quantidade"])
+    observacao = None if pd.isna(row["Observação"]) else str(row["Observação"]).strip()
 
     cursor.execute("""
-        INSERT INTO saidas (
-            data_saida,
+        INSERT INTO entradas (
+            data_entrada,
             codigo_produto,
             produto,
             unidade_medida,
             quantidade,
-            funcionario,
-            validade
+            observacao
         )
-        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        VALUES (%s, %s, %s, %s, %s, %s)
     """, (
-        row["Data"],
+        data,
         codigo,
         produto,
         unidade,
-        float(row["Quantidade"]),
-        funcionario,
-        None
+        quantidade,
+        observacao
     ))
 
 conn.commit()
 cursor.close()
 conn.close()
 
-print("Saídas importadas com sucesso 🚀")
+print("Entradas importadas com sucesso 🚀")
