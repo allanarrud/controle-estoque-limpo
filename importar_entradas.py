@@ -1,10 +1,14 @@
+import os
 import pandas as pd
 import mysql.connector
+from dotenv import load_dotenv
+
+load_dotenv()
 
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="senha",
+    password=os.getenv("MYSQL_PASSWORD"),
     database="monte_sinai"
 )
 
